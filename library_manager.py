@@ -1,11 +1,6 @@
-# Full updated Streamlit app with improved readability and visual styling
-
 import streamlit as st
 import json
 import os
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
 from datetime import datetime
 
 # --- Page Configuration ---
@@ -167,9 +162,8 @@ elif choice == "Display Statistics":
     if not library:
         st.warning("📂 No books to show statistics.")
     else:
-        df = pd.DataFrame(library)
-        total_books = len(df)
-        read_books = df["Read"].sum()
+        total_books = len(library)
+        read_books = sum([1 for book in library if book["Read"]])
         unread_books = total_books - read_books
         read_percentage = (read_books / total_books) * 100
 
@@ -177,23 +171,6 @@ elif choice == "Display Statistics":
         col1.metric("Total Books", total_books)
         col2.metric("Books Read", read_books)
         col3.metric("Read %", f"{read_percentage:.2f}%")
-
-        st.markdown("### 📘 Book Distribution by Title")
-        title_counts = df["Title"].value_counts()
-        fig1, ax1 = plt.subplots()
-        ax1.pie(title_counts, labels=title_counts.index, autopct="%1.1f%%", startangle=90)
-        ax1.axis("equal")
-        st.pyplot(fig1)
-
-        st.markdown("### 📗 Read vs Unread")
-        read_data = pd.DataFrame({
-            "Status": ["Read", "Unread"],
-            "Count": [read_books, unread_books]
-        })
-        fig2, ax2 = plt.subplots()
-        sns.barplot(data=read_data, x="Status", y="Count", palette="pastel", ax=ax2)
-        ax2.set_title("Books Read Status")
-        st.pyplot(fig2)
 
 # --- Exit App ---
 elif choice == "Exit":
